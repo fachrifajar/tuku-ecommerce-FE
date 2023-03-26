@@ -1,0 +1,34 @@
+.card {
+  width: 100%;
+  height: 400px;
+  text-decoration: none;
+
+  .imgProduct {
+    height: 230px;
+    object-fit: cover;
+  }
+
+  .cardTitle {
+    height: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    color: black;
+  }
+
+  .price {
+    color: #DB3022;
+  }
+
+  .shopName {
+    font-size: 14px;
+    color: #9B9B9B;
+  }
+
+  .rating {
+    width: 100px;
+    margin-top: -30px;
+  }
+}

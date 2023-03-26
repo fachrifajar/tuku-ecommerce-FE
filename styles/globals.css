@@ -1,0 +1,9 @@
+* {
+  font-family: "Roboto", sans-serif;
+  /* background-color: #EEEDE7; */
+}
+
+.modal-backdrop {
+  display: none;
+  visibility: hidden;
+}
