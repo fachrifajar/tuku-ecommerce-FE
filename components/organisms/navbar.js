@@ -110,6 +110,12 @@ const MyModalResult = styled(Modal)({
   justifyContent: "center",
 });
 
+const MyModalCart = styled(Modal)({
+  display: "flex",
+  alignItems: "flex-start",
+  justifyContent: "flex-end",
+});
+
 const MyCardResult = styled(Card)({
   // margin: "auto",
   // marginTop: "0%",
@@ -118,6 +124,19 @@ const MyCardResult = styled(Card)({
   width: "300vh",
   height: "300vh",
   //   height: "auto",
+});
+
+const MyCardCart = styled(Card)({
+  margin: "50px 130px",
+  // marginBottom: "30%",
+  // maxWidth: 500,
+  textAlign: "center",
+  borderRadius: "30px",
+  borderTopRightRadius: "0px",
+  padding: "25px",
+  maxHeight: "500px",
+  overflowY: "auto",
+  width: "50vh",
 });
 
 const MyButton = styled(Button)({
@@ -217,11 +236,19 @@ export default function Navbar() {
   const [isAuth, setIsAuth] = React.useState(false);
 
   const handleCart = () => {
+    handleOpenCart();
+  };
+
+  const handleRedirectCart = () => {
     if (router.asPath === "/bag/my-bag") {
       return;
     } else {
       router.push(`${router.basePath}/bag/my-bag`);
     }
+  };
+
+  const handleRedirectProfile = () => {
+    router.push("/user/profile");
   };
 
   const handleLogout = () => {
@@ -284,6 +311,18 @@ export default function Navbar() {
     getCartNotPaid();
   }, []);
 
+  // MODAL CART
+
+  const [showModalCart, setShowModalCart] = React.useState(false);
+
+  const handleCloseCart = () => {
+    setShowModalCart(false);
+  };
+
+  const handleOpenCart = () => {
+    setShowModalCart(true);
+  };
+
   // MODAL SEARCH & FILTER
 
   const [showModalResult, setShowModalResult] = React.useState(false);
@@ -339,7 +378,7 @@ export default function Navbar() {
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}>
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={(handleMenuClose, handleRedirectProfile)}>
         <ManageAccountsIcon sx={{ marginRight: "10px" }} />
         Profile
       </MenuItem>
@@ -388,7 +427,7 @@ export default function Navbar() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem onClick={(handleProfileMenuOpen, handleRedirectProfile)}>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -497,6 +536,92 @@ export default function Navbar() {
       console.log("errorFilter=>", error);
     }
   };
+
+  const renderModalCart = (
+    <>
+      <MyModalCart open={showModalCart} onClose={handleCloseCart}>
+        <MyCardCart>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}>
+            CART ({getNotifCart?.length}){" "}
+            <Typography
+              variant="h5"
+              sx={{
+                marginLeft: "auto",
+                cursor: "pointer",
+                color: "#DB3022",
+                cursor: "pointer",
+                "&:hover": { color: "#DB2522" },
+              }}
+              onClick={handleRedirectCart}>
+              see more
+            </Typography>
+          </Typography>
+
+          {/* <hr /> */}
+          {getNotifCart?.map((item, key) => (
+            <React.Fragment key={key}>
+              <Card sx={{ display: "flex", alignItems: "center" }}>
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                  <CardContent
+                    sx={{
+                      // flex: "1 0 auto",
+                      flexDirection: "row",
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}>
+                    <CardMedia
+                      component="img"
+                      sx={{ width: "30%", height: "30%", marginRight: "10px" }}
+                      image={`https://res.cloudinary.com/daouvimjz/image/upload/v1676279237/${item?.product_picture}`}
+                      alt="Live from space album cover"
+                    />
+
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}>
+                      <Typography component="div" variant="h5">
+                        {item?.product_name}
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        color="text.secondary"
+                        component="div">
+                        Rp.{parseInt(item?.total_est)}
+                      </Typography>
+                    </div>
+                  </CardContent>
+                </Box>
+              </Card>
+            </React.Fragment>
+          ))}
+          <style>
+            {`
+::-webkit-scrollbar {
+  width: 0.1em;
+  height: 0.5em;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+`}
+          </style>
+        </MyCardCart>
+      </MyModalCart>
+    </>
+  );
 
   const renderModalFilter = (
     <>
@@ -1229,6 +1354,7 @@ export default function Navbar() {
       {renderMenu}
       {renderModalFilter}
       {renderModalResult}
+      {renderModalCart}
       <Backdrop
         sx={{
           color: "#fff",

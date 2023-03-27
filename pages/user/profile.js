@@ -298,10 +298,7 @@ export default function profile(props) {
 
   return (
     <div>
-      <nav
-        className={`container-fluid sticky-sm-top shadow py-2 ${style.containerNavbar}`}>
-        <Navbar />
-      </nav>
+      <Navbar />
       <div className="profile mt-5">
         <div className="container">
           <div className="row">
