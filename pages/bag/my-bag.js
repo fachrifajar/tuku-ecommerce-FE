@@ -325,10 +325,7 @@ export default function bag(props) {
 
         <div className="container-fluid p-0">
           {/* NAVBAR */}
-          <nav
-            className={`container-fluid sticky-sm-top shadow py-2 ${style.containerNavbar}`}>
-            <Navbar />
-          </nav>
+          <Navbar />
           {/* END OF NAVBAR */}
 
           {/* MY BAG */}

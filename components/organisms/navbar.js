@@ -1,5 +1,7 @@
 import * as React from "react";
+import CardProductContent from "@/components/molecules/cardContent";
 import axios from "axios";
+import { getCookies, getCookie, setCookie, deleteCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { styled, alpha } from "@mui/material/styles";
 import {
@@ -38,6 +40,8 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import CloseIcon from "@mui/icons-material/Close";
+import LogoutIcon from "@mui/icons-material/Logout";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
 import { useMediaQuery } from "@mui/material";
 
@@ -197,20 +201,11 @@ const MyLoadingButton = styled(LoadingButton)({
 });
 
 export default function Navbar() {
-  const capitalize = (str) => {
-    return str.replace(/(^\w|\s\w)/g, function (letter) {
-      return letter.toUpperCase();
-    });
-  };
-
-  const convertNumber = (str) => {
-    return str.replace(/\d(?=(\d{3})+$)/g, "$&.");
-  };
-
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
+  const [loading, setLoading] = React.useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const isXs = useMediaQuery("(max-width: 600px)");
@@ -218,6 +213,26 @@ export default function Navbar() {
   const [getData, setGetData] = React.useState(null);
   const [getBrand, setGetBrand] = React.useState([]);
   const [showModalFilter, setShowModalFilter] = React.useState(false);
+  const [getNotifCart, setGetNotifCart] = React.useState([]);
+  const [isAuth, setIsAuth] = React.useState(false);
+
+  const handleCart = () => {
+    if (router.asPath === "/bag/my-bag") {
+      return;
+    } else {
+      router.push(`${router.basePath}/bag/my-bag`);
+    }
+  };
+
+  const handleLogout = () => {
+    deleteCookie("profile");
+    deleteCookie("token");
+    localStorage.removeItem("profile");
+    localStorage.removeItem("token");
+
+    router.push("/");
+    window.location.reload();
+  };
 
   const handleCloseFilter = () => {
     setShowModalFilter(false);
@@ -239,6 +254,34 @@ export default function Navbar() {
 
   React.useEffect(() => {
     setGetData(JSON.parse(localStorage.getItem("profile")));
+
+    if (JSON.parse(localStorage.getItem("profile"))) {
+      setIsAuth(true);
+    }
+  }, []);
+  // console.log("getData->", getData?.profilePicture);
+
+  React.useEffect(() => {
+    const getCartNotPaid = async () => {
+      try {
+        const getProfileData = JSON.parse(localStorage.getItem("profile"));
+        const getToken = getProfileData?.accessToken;
+
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/checkout/detail/history`,
+          {
+            headers: {
+              Authorization: `Bearer ${getToken}`,
+            },
+          }
+        );
+
+        setGetNotifCart(response?.data?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getCartNotPaid();
   }, []);
 
   // MODAL SEARCH & FILTER
@@ -296,8 +339,14 @@ export default function Navbar() {
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}>
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <ManageAccountsIcon sx={{ marginRight: "10px" }} />
+        Profile
+      </MenuItem>
+      <MenuItem onClick={(handleMenuClose, handleLogout)}>
+        <LogoutIcon sx={{ marginRight: "10px" }} />
+        Logout
+      </MenuItem>
     </Menu>
   );
 
@@ -317,9 +366,12 @@ export default function Navbar() {
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}>
-      <MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleCart();
+        }}>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
+          <Badge badgeContent={getNotifCart?.length} color="error">
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
@@ -343,9 +395,20 @@ export default function Navbar() {
           aria-controls="primary-search-account-menu"
           aria-haspopup="true"
           color="inherit">
-          <AccountCircle />
+          <ManageAccountsIcon />
         </IconButton>
         <p>Profile</p>
+      </MenuItem>
+      <MenuItem onClick={(handleProfileMenuOpen, handleLogout)}>
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit">
+          <LogoutIcon />
+        </IconButton>
+        <p>Logout</p>
       </MenuItem>
     </Menu>
   );
@@ -877,8 +940,11 @@ export default function Navbar() {
                   <IconButton
                     size="large"
                     aria-label="show 4 new mails"
-                    color="inherit">
-                    <Badge badgeContent={4} color="error">
+                    color="inherit"
+                    onClick={() => {
+                      handleCart();
+                    }}>
+                    <Badge badgeContent={getNotifCart?.length} color="error">
                       <ShoppingCartIcon />
                     </Badge>
                   </IconButton>
@@ -953,117 +1019,11 @@ export default function Navbar() {
                       container
                       spacing={1}
                       sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
-                      <Card
-                        sx={{
-                          maxWidth: 345,
-                          marginTop: "50px",
-                          marginRight: "20px",
-                        }}>
-                        <CardActionArea>
-                          <CardMedia
-                            component="img"
-                            height="240"
-                            image={`https://res.cloudinary.com/daouvimjz/image/upload/v1676281237/${getDataSearch?.products_picture[0]?.product_picture}`}
-                            alt={getDataSearch?.product_name}
-                            sx={{
-                              transition: "height 0.3s ease-in-out",
-                              "&:hover": {
-                                height: 340,
-                                transitionDelay: "0.2s",
-                              },
-                              width: "50vh",
-                            }}
-                          />
-                          <CardContent>
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                              sx={{ fontWeight: "bold", mb: 3 }}>
-                              {capitalize(getDataSearch?.product_name)}
-                              <span>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary">
-                                  ( {capitalize(getDataSearch?.category)} )
-                                </Typography>
-                              </span>
-                            </Typography>
-
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                              sx={{
-                                justifyContent: "center",
-                                display: "flex",
-                                color: "#db3022",
-                              }}>
-                              {`Rp.${convertNumber(getDataSearch?.price)}`}
-                            </Typography>
-                            <span
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-around",
-                              }}>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{
-                                  justifyContent: "flex-start",
-                                  display: "flex",
-                                  mt: 2,
-                                }}>
-                                <strong>Store: </strong>&nbsp;
-                                {capitalize(getDataSearch?.store_name)}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{
-                                  justifyContent: "flex-start",
-                                  display: "flex",
-                                  mt: 2,
-                                }}>
-                                <strong>Brand: </strong>&nbsp;
-                                {capitalize(getDataSearch?.brand)}
-                              </Typography>
-                            </span>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                marginTop: "15px",
-                                justifyContent: "center",
-                              }}>
-                              <span
-                                style={{
-                                  flexDirection: "row",
-                                  display: "flex",
-                                }}>
-                                <Rating
-                                  name="read-only"
-                                  value={getDataSearch?.avg_review}
-                                  precision={0.01}
-                                  readOnly
-                                  size="small"
-                                />
-                                <Typography
-                                  component="legend"
-                                  style={{
-                                    marginLeft: "8px",
-                                    color: "#9B9B9B",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                  }}>
-                                  {getDataSearch?.avg_review}
-                                </Typography>
-                              </span>
-                            </div>
-                          </CardContent>
-                        </CardActionArea>
-                      </Card>
+                      {[getDataSearch]?.map((product, index) => (
+                        <>
+                          <CardProductContent key={index} data={product} />
+                        </>
+                      ))}
                     </Grid>
                   </>
                 )}
@@ -1087,120 +1047,9 @@ export default function Navbar() {
                         display: "flex",
                         justifyContent: "center",
                       }}>
-                      {getDataFilter?.map((item, key) => (
+                      {getDataFilter?.map((product, index) => (
                         <>
-                          <Card
-                            key={key}
-                            sx={{
-                              maxWidth: 345,
-                              marginTop: "50px",
-                              marginRight: "20px",
-                            }}>
-                            <CardActionArea>
-                              <CardMedia
-                                component="img"
-                                height="240"
-                                image={`https://res.cloudinary.com/daouvimjz/image/upload/v1676281237/${item?.products_picture[0]?.product_picture}`}
-                                alt={item?.product_name}
-                                sx={{
-                                  transition: "height 0.3s ease-in-out",
-                                  "&:hover": {
-                                    height: 340,
-                                    transitionDelay: "0.2s",
-                                  },
-                                  width: "50vh",
-                                }}
-                              />
-                              <CardContent>
-                                <Typography
-                                  gutterBottom
-                                  variant="h5"
-                                  component="div"
-                                  sx={{ fontWeight: "bold", mb: 3 }}>
-                                  {capitalize(item?.product_name)}
-                                  <span>
-                                    <Typography
-                                      variant="body2"
-                                      color="text.secondary">
-                                      ( {capitalize(item?.category)} )
-                                    </Typography>
-                                  </span>
-                                </Typography>
-
-                                <Typography
-                                  gutterBottom
-                                  variant="h5"
-                                  component="div"
-                                  sx={{
-                                    justifyContent: "center",
-                                    display: "flex",
-                                    color: "#db3022",
-                                  }}>
-                                  {`Rp.${convertNumber(item?.price)}`}
-                                </Typography>
-                                <span
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "space-around",
-                                  }}>
-                                  <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    sx={{
-                                      justifyContent: "flex-start",
-                                      display: "flex",
-                                      mt: 2,
-                                    }}>
-                                    <strong>Store: </strong>&nbsp;
-                                    {capitalize(item?.store_name)}
-                                  </Typography>
-                                  <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    sx={{
-                                      justifyContent: "flex-start",
-                                      display: "flex",
-                                      mt: 2,
-                                    }}>
-                                    <strong>Brand: </strong>&nbsp;
-                                    {capitalize(item?.brand)}
-                                  </Typography>
-                                </span>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    marginTop: "15px",
-                                    justifyContent: "center",
-                                  }}>
-                                  <span
-                                    style={{
-                                      flexDirection: "row",
-                                      display: "flex",
-                                    }}>
-                                    <Rating
-                                      name="read-only"
-                                      value={item?.avg_review}
-                                      precision={0.01}
-                                      readOnly
-                                      size="small"
-                                    />
-                                    <Typography
-                                      component="legend"
-                                      style={{
-                                        marginLeft: "8px",
-                                        color: "#9B9B9B",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                      }}>
-                                      {item?.avg_review}
-                                    </Typography>
-                                  </span>
-                                </div>
-                              </CardContent>
-                            </CardActionArea>
-                          </Card>
+                          <CardProductContent key={index} data={product} />
                         </>
                       ))}
                     </Grid>
@@ -1301,58 +1150,94 @@ export default function Navbar() {
             <FilterAltIcon />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit">
-              <Badge badgeContent={4} color="error">
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit">
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit">
-              {getData?.profilePicture.includes("https") ? (
-                <AccountCircle />
-              ) : (
-                <Avatar
-                  src={`https://res.cloudinary.com/daouvimjz/image/upload/v1676279237/${getData?.profile_picture}`}
-                  sx={{ width: 24, height: 24 }}
-                />
-              )}
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit">
-              <MoreIcon />
-            </IconButton>
-          </Box>
+
+          {isAuth ? (
+            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+              <IconButton
+                size="large"
+                aria-label="show 4 new mails"
+                color="inherit"
+                onClick={() => {
+                  handleCart();
+                }}>
+                <Badge badgeContent={getNotifCart?.length} color="error">
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
+              <IconButton
+                size="large"
+                aria-label="show 17 new notifications"
+                color="inherit">
+                <Badge badgeContent={17} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit">
+                {getData?.profilePicture.includes("https") ? (
+                  <AccountCircle />
+                ) : (
+                  <Avatar
+                    src={`https://res.cloudinary.com/daouvimjz/image/upload/v1676279237/${getData?.profilePicture}`}
+                    sx={{ width: 24, height: 24 }}
+                  />
+                )}
+              </IconButton>
+            </Box>
+          ) : (
+            <>
+              <Button
+                variant="outlined"
+                onClick={() => router.push("auth/login")}
+                sx={{
+                  borderRadius: "20px",
+                  color: "white",
+                  borderColor: "white",
+                  "&:hover": {
+                    background: "white",
+                    border: "none",
+                    color: "black",
+                  },
+                }}>
+                Login
+              </Button>
+            </>
+          )}
+
+          {isAuth ? (
+            <Box sx={{ display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit">
+                <MoreIcon />
+              </IconButton>
+            </Box>
+          ) : null}
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
       {renderModalFilter}
       {renderModalResult}
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={loading}
+        disabled={!loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
 }

@@ -114,7 +114,7 @@ export default function DetailProduct(props) {
     }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (params) => {
     try {
       if (!size || !color) {
         if (!size && !color) {
@@ -156,10 +156,10 @@ export default function DetailProduct(props) {
       );
       setIsLoading(false);
 
-      if (getButton == "addbag") {
+      if (params == "addbag") {
         handleOpenSuccess();
       }
-      if (getButton == "buynow") {
+      if (params == "buynow") {
         // router.push("/checkout");
         router.push("/bag/my-bag");
       }
@@ -479,6 +479,13 @@ export default function DetailProduct(props) {
                                 borderColor: "#DB3022",
                               },
                             },
+                            "& .MuiSelect-icon.Mui-focused": {
+                              color: "#DB3022",
+                            },
+                            "& .MuiSelect-select:focus": {
+                              backgroundColor: "#fff",
+                              color: "#000",
+                            },
                           }}>
                           <MenuItem value="">
                             <em>None</em>
@@ -555,8 +562,10 @@ export default function DetailProduct(props) {
                     </div>
                   </div>
                   <div className="row mt-4">
-                    <div className={`col-12 ${style.btnProduct}`}>
-                      <div
+                    <div
+                      className={`col-12 ${style.btnProduct}`}
+                      style={{ display: "flex", justifyContent: "flex-start" }}>
+                      {/* <div
                         // href={"/bag/my-bag"}
                         // onClick={() => {
                         //   handleSubmit()
@@ -565,7 +574,7 @@ export default function DetailProduct(props) {
                         type="button"
                         className={`btn btn-outline-secondary rounded-pill me-3 ${style.btnChat}`}>
                         Chat
-                      </div>
+                      </div> */}
 
                       {isLoading ? (
                         <LoadingButton
@@ -579,8 +588,8 @@ export default function DetailProduct(props) {
                             color: "black",
                           }}
                           onClick={() => {
-                            setGetButton("addbag");
-                            handleCheckout();
+                            // setGetButton("addbag");
+                            handleCheckout("addbag");
                           }}>
                           {isLoading ? "Loading..." : "Add to Cart"}
                         </LoadingButton>
@@ -589,8 +598,8 @@ export default function DetailProduct(props) {
                           variant="contained"
                           color="primary"
                           onClick={() => {
-                            setGetButton("addbag");
-                            handleCheckout();
+                            // setGetButton("addbag");
+                            handleCheckout("addbag");
                           }}>
                           Add to Cart
                         </MyButton>
@@ -608,8 +617,8 @@ export default function DetailProduct(props) {
                             color: "black",
                           }}
                           onClick={() => {
-                            setGetButton("buynow");
-                            handleCheckout();
+                            // setGetButton("buynow");
+                            handleCheckout("buynow");
                           }}>
                           {isLoading ? "Loading..." : "Buy Now"}
                         </LoadingButton>
@@ -618,8 +627,8 @@ export default function DetailProduct(props) {
                           variant="contained"
                           color="primary"
                           onClick={() => {
-                            setGetButton("buynow");
-                            handleCheckout();
+                            // setGetButton("buynow");
+                            handleCheckout("buynow");
                           }}>
                           Buy Now
                         </MyButton>
