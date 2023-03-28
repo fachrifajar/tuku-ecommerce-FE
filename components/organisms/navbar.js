@@ -286,7 +286,8 @@ export default function Navbar() {
       setIsAuth(true);
     }
   }, []);
-  // console.log("getData->", getData?.profilePicture);
+  // console.log("getData->", getData);
+  // console.log(getData.profilePicture.includes('https'))
 
   React.useEffect(() => {
     const getCartNotPaid = async () => {
@@ -1093,7 +1094,7 @@ export default function Navbar() {
                       <AccountCircle />
                     ) : (
                       <Avatar
-                        src={`https://res.cloudinary.com/daouvimjz/image/upload/v1676279237/${getData?.profile_picture}`}
+                        src={`https://res.cloudinary.com/daouvimjz/image/upload/v1676281237/${getData?.profilePicture}`}
                         sx={{ width: 24, height: 24 }}
                       />
                     )}
@@ -1309,7 +1310,7 @@ export default function Navbar() {
                   <AccountCircle />
                 ) : (
                   <Avatar
-                    src={`https://res.cloudinary.com/daouvimjz/image/upload/v1676279237/${getData?.profilePicture}`}
+                    src={`https://res.cloudinary.com/daouvimjz/image/upload/v1676281237/${getData?.profilePicture}`}
                     sx={{ width: 24, height: 24 }}
                   />
                 )}

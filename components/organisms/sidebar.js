@@ -7,7 +7,7 @@ import { BsFillPencilFill, BsBoxSeam, BsCart2 } from "react-icons/bs";
 export default function sidebar() {
   return (
     <div>
-      <div className="sidebarInfo d-flex align-items-center">
+      {/* <div className="sidebarInfo d-flex align-items-center">
         <img
           src="../../images/profile.png"
           className={`${style.profile}`}
@@ -26,7 +26,7 @@ export default function sidebar() {
             </small>
           </Link>
         </div>
-      </div>
+      </div> */}
       <div className="store mt-5 d-flex align-items-center">
         <div
           className={`${style.bgIcon}`}

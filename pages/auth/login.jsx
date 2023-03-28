@@ -372,7 +372,7 @@ const Login = () => {
   return (
     <div>
       <Head>
-        <title>Login | Blanja</title>
+        <title>Login | Tuku</title>
         <link rel="icon" href="/images/logo.png" />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <style>{`
