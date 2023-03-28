@@ -82,6 +82,9 @@ export default function DetailProduct(props) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [getToken, setGetToken] = React.useState(null);
 
+  const isAuth = JSON.parse(localStorage.getItem("profile"));
+  console.log("isAuth->", isAuth);
+
   const router = useRouter();
 
   React.useEffect(() => {
@@ -116,6 +119,13 @@ export default function DetailProduct(props) {
 
   const handleCheckout = async (params) => {
     try {
+      if (!isAuth) {
+        setErrMsg("PLEASE LOGIN FIRST TO ACCESS THIS PAGE");
+        setIsErr(true);
+        setShowModal(true);
+        return;
+      }
+
       if (!size || !color) {
         if (!size && !color) {
           setErrMsg("Size & Color not selected");
@@ -193,7 +203,7 @@ export default function DetailProduct(props) {
     return str.replace(/\d(?=(\d{3})+$)/g, "$&.");
   };
 
-  console.log("getProducts---", getProducts);
+  // console.log("getProducts---", getProducts);
 
   const handleChange = (event) => {
     setColor(event.target.value);
@@ -243,9 +253,9 @@ export default function DetailProduct(props) {
                 <strong style={{ fontSize: "16px" }}>{errMsg}</strong>
               </Alert>
 
-              <Typography variant="body1" sx={{ margin: "20px" }}>
+              {/* <Typography variant="body1" sx={{ margin: "20px" }}>
                 Please complete required fields{" "}
-              </Typography>
+              </Typography> */}
 
               <div style={{ display: "flex", flexDirection: "column" }}></div>
             </CardContent>

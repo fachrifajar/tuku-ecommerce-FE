@@ -1320,7 +1320,7 @@ export default function Navbar() {
             <>
               <Button
                 variant="outlined"
-                onClick={() => router.push("auth/login")}
+                onClick={() => router.push("/auth/login")}
                 sx={{
                   borderRadius: "20px",
                   color: "white",
