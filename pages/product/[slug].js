@@ -4,7 +4,7 @@ import Head from "next/head";
 import style from "@/styles/pages/detailProductStyle.module.scss";
 import Link from "next/link";
 import Navbar from "@/components/organisms/navbar";
-import CardProductNew from "@/components/molecules/cardContent";
+import CardProductContent from "@/components/molecules/cardContent";
 import Footer from "@/components/organisms/footer";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -64,10 +64,28 @@ const MyButton = styled(Button)({
 });
 
 export default function DetailProduct(props) {
-  const productListNew = props.productListNew;
-  // const products = useSelector((state) => state);
+  const [productNew, setProductNew] = React.useState([]);
 
-  const [productNew, setProductNew] = React.useState(productListNew.data);
+  React.useEffect(() => {
+    const fetchSameCategory = async () => {
+      try {
+        const getSpecificProduct = JSON.parse(
+          sessionStorage.getItem("productSlug")
+        );
+
+        const productNew = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?sort=DESC&categoryFilter=${getSpecificProduct?.category}`
+        );
+
+        setProductNew(productNew?.data?.data);
+        // console.log("productNew?.data=>", productNew?.data?.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchSameCategory();
+  }, []);
+
   const [getProducts, setGetProducts] = React.useState(
     JSON.parse(sessionStorage.getItem("productSlug"))
   );
@@ -83,7 +101,7 @@ export default function DetailProduct(props) {
   const [getToken, setGetToken] = React.useState(null);
 
   const isAuth = JSON.parse(localStorage.getItem("profile"));
-  console.log("isAuth->", isAuth);
+  // console.log("isAuth->", isAuth);
 
   const router = useRouter();
 
@@ -673,17 +691,8 @@ export default function DetailProduct(props) {
               <h2>You can also like this</h2>
               <p>You’ve never seen it before!</p>
               <div className={`row ${style.content}`}>
-                {productNew?.map((item, key) => (
-                  <React.Fragment key={key}>
-                    <div className="col-3 mb-4">
-                      <CardProductNew
-                        img={item?.products_picture[0]?.product_picture}
-                        productName={item?.product_name}
-                        price={item?.price}
-                        storeName={item?.store_name}
-                      />
-                    </div>
-                  </React.Fragment>
+                {productNew?.map((product, index) => (
+                  <CardProductContent key={index} data={product} />
                 ))}
               </div>
             </div>
@@ -700,15 +709,17 @@ export default function DetailProduct(props) {
 }
 
 export async function getServerSideProps(context) {
-  const productNew = await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?sort=DESC&categoryFilter=tshirt`
-  );
+  // const getSpecificProduct = JSON.parse(sessionStorage.getItem("productSlug"));
 
-  const convertProductNew = productNew.data;
+  // const productNew = await axios.get(
+  //   `${process.env.NEXT_PUBLIC_BACKEND_URL}/products?sort=DESC&categoryFilter=${getSpecificProduct?.category}`
+  // );
+
+  // const convertProductNew = productNew.data;
   const token = getCookie("token", context) || "";
   return {
     props: {
-      productListNew: convertProductNew,
+      // productListNew: convertProductNew,
       token,
     }, // will be passed to the page component as props
   };
