@@ -7,11 +7,7 @@ import Link from "next/link";
 export default function selling() {
   return (
     <div>
-      <nav
-        className={`container-fluid sticky-sm-top shadow py-2 ${style.containerNavbar}`}
-      >
-        <Navbar />
-      </nav>
+      <Navbar />
       <div className="selling mt-5">
         <div className="container">
           <div className="row">
@@ -97,8 +93,7 @@ export default function selling() {
                               />
                               <label
                                 className="form-check-label"
-                                for="flexRadioDefault1"
-                              >
+                                for="flexRadioDefault1">
                                 Baru
                               </label>
                             </div>
@@ -114,8 +109,7 @@ export default function selling() {
                               />
                               <label
                                 class="form-check-label"
-                                for="flexRadioDefault2"
-                              >
+                                for="flexRadioDefault2">
                                 Bekas
                               </label>
                             </div>
@@ -147,8 +141,7 @@ export default function selling() {
                     <textarea
                       class="form-control"
                       id="exampleFormControlTextarea1"
-                      rows="3"
-                    ></textarea>
+                      rows="3"></textarea>
                   </div>
                 </div>
               </div>
@@ -156,8 +149,7 @@ export default function selling() {
                 <Link
                   href={""}
                   type="button"
-                  className={`btn btn-primary me-3 ${style.save}`}
-                >
+                  className={`btn btn-primary me-3 ${style.save}`}>
                   Jual
                 </Link>
               </div>

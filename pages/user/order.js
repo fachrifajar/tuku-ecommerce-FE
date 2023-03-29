@@ -35,16 +35,16 @@ const MyCard = styled(Card)({
 export default function order(props) {
   const router = useRouter();
 
-  const [getPaid, setGetPaid] = React.useState(null);
-  const [getNotPaid, setGetNotPaid] = React.useState(null);
+  const [getPaid, setGetPaid] = React.useState([]);
+  const [getNotPaid, setGetNotPaid] = React.useState([]);
 
   React.useEffect(() => {
     setGetPaid(props.paid);
     setGetNotPaid(props.notPaid);
   }, []);
 
-  // console.log("getPaid===", getPaid);
-  // console.log("getNotPaid===", getNotPaid);
+  console.log("getPaid===", getPaid);
+  console.log("getNotPaid===", getNotPaid);
 
   const [value, setValue] = React.useState(0);
 
@@ -89,118 +89,133 @@ export default function order(props) {
 
   const renderPaid = (
     <>
-      {getPaid?.map((data, key) => (
-        <React.Fragment key={key}>
-          <Card
-            sx={{
-              backgroundColor: "#fafafa ",
-              marginBottom: "20px",
-            }}>
-            <CardActionArea>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+      {getPaid.length ? (
+        <>
+          {getPaid?.map((data, key) => (
+            <React.Fragment key={key}>
+              <Card
+                sx={{
+                  backgroundColor: "#fafafa ",
+                  marginBottom: "20px",
                 }}>
-                <div>
-                  <CardMedia
-                    component="img"
-                    height="150"
-                    image={`https://res.cloudinary.com/daouvimjz/image/upload/v1676281237/${data?.product_picture}`}
-                    alt={data?.product_name}
-                    sx={{
-                      width: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                  }}>
-                  <CardContent>
-                    <Typography
-                      gutterBottom
-                      variant="h6"
-                      component="div"
-                      sx={{
-                        fontWeight: "bold",
-                        mb: 3,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        textAlign: "center",
-                      }}>
-                      {capitalize(data?.product_name)}
-                      <span>
-                        <Typography variant="body2" color="text.secondary">
-                          ( {capitalize(data?.color)} ) ({" "}
-                          {capitalize(data?.size)} ) ( {data?.qty} pcs )
-                        </Typography>
-                      </span>
-                    </Typography>
-                    <Typography
-                      gutterBottom
-                      variant="h6"
-                      component="div"
-                      sx={{
-                        justifyContent: "center",
-                        display: "flex",
-                        color: "#db3022",
-                        fontWeight: "bold",
-                      }}>
-                      Rp.{convertNumber(data?.total_est)}
-                    </Typography>
-                    <span
+                <CardActionArea>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}>
+                    <div>
+                      <CardMedia
+                        component="img"
+                        height="150"
+                        image={`https://res.cloudinary.com/daouvimjz/image/upload/v1676281237/${data?.product_picture}`}
+                        alt={data?.product_name}
+                        sx={{
+                          width: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </div>
+                    <div
                       style={{
-                        display: "flex",
-                        justifyContent: "space-around",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
                       }}>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                          justifyContent: "flex-start",
-                          display: "flex",
-                          mt: 2,
-                        }}>
-                        <strong>Store: </strong>&nbsp;
-                        {capitalize(data?.store_name)}
-                      </Typography>
-                      &nbsp; &nbsp;
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{
-                          justifyContent: "flex-start",
-                          display: "flex",
-                          mt: 2,
-                          fontWeight: "bold",
-                        }}>
-                        <strong>Order ID: </strong>&nbsp;
-                        {data?.checkout_id}
-                      </Typography>
-                    </span>
-                  </CardContent>
-                </div>
-              </div>
-            </CardActionArea>
-            <Backdrop
-              sx={{
-                color: "#fff",
-                zIndex: (theme) => theme.zIndex.drawer + 1,
-              }}
-              open={loading}
-              disabled={!loading}>
-              <CircularProgress color="inherit" />
-            </Backdrop>
-          </Card>
-        </React.Fragment>
-      ))}
+                      <CardContent>
+                        <Typography
+                          gutterBottom
+                          variant="h6"
+                          component="div"
+                          sx={{
+                            fontWeight: "bold",
+                            mb: 3,
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            textAlign: "center",
+                          }}>
+                          {capitalize(data?.product_name)}
+                          <span>
+                            <Typography variant="body2" color="text.secondary">
+                              ( {capitalize(data?.color)} ) ({" "}
+                              {capitalize(data?.size)} ) ( {data?.qty} pcs )
+                            </Typography>
+                          </span>
+                        </Typography>
+                        <Typography
+                          gutterBottom
+                          variant="h6"
+                          component="div"
+                          sx={{
+                            justifyContent: "center",
+                            display: "flex",
+                            color: "#db3022",
+                            fontWeight: "bold",
+                          }}>
+                          Rp.{convertNumber(data?.total_est)}
+                        </Typography>
+                        <span
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-around",
+                          }}>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              justifyContent: "flex-start",
+                              display: "flex",
+                              mt: 2,
+                            }}>
+                            <strong>Store: </strong>&nbsp;
+                            {capitalize(data?.store_name)}
+                          </Typography>
+                          &nbsp; &nbsp;
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              justifyContent: "flex-start",
+                              display: "flex",
+                              mt: 2,
+                              fontWeight: "bold",
+                            }}>
+                            <strong>Order ID: </strong>&nbsp;
+                            {data?.checkout_id}
+                          </Typography>
+                        </span>
+                      </CardContent>
+                    </div>
+                  </div>
+                </CardActionArea>
+                <Backdrop
+                  sx={{
+                    color: "#fff",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                  }}
+                  open={loading}
+                  disabled={!loading}>
+                  <CircularProgress color="inherit" />
+                </Backdrop>
+              </Card>
+            </React.Fragment>
+          ))}
+        </>
+      ) : (
+        <Typography
+          variant="h5"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "50px",
+          }}>
+          No Transaction yet !
+        </Typography>
+      )}
     </>
   );
 

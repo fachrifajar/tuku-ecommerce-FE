@@ -6,11 +6,7 @@ import style from "../../styles/pages/homeStyle.module.scss";
 export default function product() {
   return (
     <div>
-      <nav
-        className={`container-fluid sticky-sm-top shadow py-2 ${style.containerNavbar}`}
-      >
-        <Navbar />
-      </nav>
+      <Navbar />
       <div className="product mt-5">
         <div className="container">
           <div className="row">
@@ -26,8 +22,7 @@ export default function product() {
                       <a
                         className="nav-link active border-bottom border-3"
                         aria-current="page"
-                        href="#"
-                      >
+                        href="#">
                         Active
                       </a>
                     </li>
@@ -50,8 +45,7 @@ export default function product() {
                     <button
                       className="btn btn-outline-secondary"
                       type="button"
-                      id="button-addon1"
-                    >
+                      id="button-addon1">
                       Button
                     </button>
                     <input
