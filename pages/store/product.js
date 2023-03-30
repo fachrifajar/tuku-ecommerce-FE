@@ -2,10 +2,21 @@ import React from "react";
 import Sidebar from "../../components/organisms/sidebar";
 import Navbar from "@/components/organisms/navbar";
 import style from "../../styles/pages/homeStyle.module.scss";
+import Head from "next/head";
 
 export default function product() {
   return (
     <div>
+      <Head>
+        <title>My Products | Tuku</title>
+        <link rel="icon" href="/images/logo.png" />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+        <style>{`
+          body {
+            background-color: #59faf2;
+          }
+        `}</style>
+      </Head>
       <Navbar />
       <div className="product mt-5">
         <div className="container">

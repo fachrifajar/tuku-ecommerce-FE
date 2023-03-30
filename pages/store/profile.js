@@ -404,7 +404,7 @@ export default function profile(props) {
                           onChange={handleChangePhoneNumber}
                           InputProps={{
                             inputProps: {
-                              maxLength: 15,
+                              maxLength: 12,
                             },
                           }}
                         />
@@ -422,7 +422,7 @@ export default function profile(props) {
                           onChange={handleChangePhoneNumber}
                           InputProps={{
                             inputProps: {
-                              maxLength: 15,
+                              maxLength: 12,
                             },
                           }}
                         />
