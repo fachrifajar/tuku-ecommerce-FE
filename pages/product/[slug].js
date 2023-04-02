@@ -396,27 +396,29 @@ export default function DetailProduct(props) {
                       {capitalize(getProducts?.brand)}
                     </p>
 
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <Rating
-                        name="read-only"
-                        value={getProducts.avg_review}
-                        precision={0.01}
-                        readOnly
-                        size="small"
-                      />
-                      <Typography
-                        component="legend"
-                        style={{ marginLeft: "8px", color: "#9B9B9B" }}>
-                        <span style={{ color: "black" }}>
-                          {getProducts.avg_review}{" "}
-                        </span>
-                        ({getProducts.review.length} rating) |
-                        <span style={{ color: "black" }}>
-                          {" "}
-                          Sold {getProducts?.item_sold_count}
-                        </span>
-                      </Typography>
-                    </div>
+                    {getProducts.avg_review !== null ? (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <Rating
+                          name="read-only"
+                          value={getProducts.avg_review}
+                          precision={0.01}
+                          readOnly
+                          size="small"
+                        />
+                        <Typography
+                          component="legend"
+                          style={{ marginLeft: "8px", color: "#9B9B9B" }}>
+                          <span style={{ color: "black" }}>
+                            {getProducts.avg_review}{" "}
+                          </span>
+                          ({getProducts.review.length} rating) |
+                          <span style={{ color: "black" }}>
+                            {" "}
+                            Sold {getProducts?.item_sold_count}
+                          </span>
+                        </Typography>
+                      </div>
+                    ) : null}
                   </div>
                   <Grid
                     container
