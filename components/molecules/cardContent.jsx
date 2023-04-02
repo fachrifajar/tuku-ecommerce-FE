@@ -43,14 +43,15 @@ const CardProductContent = ({ data, key }) => {
         // );
         sessionStorage.setItem("productSlug", JSON.stringify(data?.data[0]));
 
-        const regex = /^\/product\/(.*)$/;
-        const currentSlug = router.asPath.match(regex)?.[1];
-        if (currentSlug && currentSlug !== slug) {
-          window.location.reload();
-        } else {
-          setLoading(false);
-          router.push(`/product/${slug}`);
-        }
+        // const regex = /^\/product\/(.*)$/;
+        // const currentSlug = router.asPath.match(regex)?.[1];
+        // if (currentSlug && currentSlug !== slug) {
+        //   window.location.reload();
+        // } else {
+        //   setLoading(false);
+        //   router.push(`/product/${slug}`);
+        // }
+        router.push(`/product/${slug}`);
       });
   };
 
