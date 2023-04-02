@@ -258,7 +258,7 @@ export default function Navbar() {
     localStorage.removeItem("token");
 
     router.push("/");
-    window.location.reload();
+    // window.location.reload();
   };
 
   const handleCloseFilter = () => {
@@ -542,74 +542,80 @@ export default function Navbar() {
     <>
       <MyModalCart open={showModalCart} onClose={handleCloseCart}>
         <MyCardCart>
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: "bold",
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              marginBottom: "20px",
-            }}>
-            CART ({getNotifCart?.length}){" "}
-            <Typography
-              variant="h5"
-              sx={{
-                marginLeft: "auto",
-                cursor: "pointer",
-                color: "#DB3022",
-                cursor: "pointer",
-                "&:hover": { color: "#DB2522" },
-              }}
-              onClick={handleRedirectCart}>
-              see more
-            </Typography>
-          </Typography>
+          {getNotifCart?.length ? (
+            <>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: "bold",
+                  display: "flex",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  marginBottom: "20px",
+                }}>
+                CART ({getNotifCart?.length}){" "}
+                <Typography
+                  variant="h5"
+                  sx={{
+                    marginLeft: "auto",
+                    cursor: "pointer",
+                    color: "#DB3022",
+                    cursor: "pointer",
+                    "&:hover": { color: "#DB2522" },
+                  }}
+                  onClick={handleRedirectCart}>
+                  see more
+                </Typography>
+              </Typography>
 
-          {/* <hr /> */}
-          {getNotifCart?.map((item, key) => (
-            <React.Fragment key={key}>
-              <Card sx={{ display: "flex", alignItems: "center" }}>
-                <Box sx={{ display: "flex", flexDirection: "column" }}>
-                  <CardContent
-                    sx={{
-                      // flex: "1 0 auto",
-                      flexDirection: "row",
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                    }}>
-                    <CardMedia
-                      component="img"
-                      sx={{ width: "30%", height: "30%", marginRight: "10px" }}
-                      image={`https://res.cloudinary.com/daouvimjz/image/upload/v1676279237/${item?.product_picture}`}
-                      alt="Live from space album cover"
-                    />
+              {/* <hr /> */}
+              {getNotifCart?.map((item, key) => (
+                <React.Fragment key={key}>
+                  <Card sx={{ display: "flex", alignItems: "center" }}>
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      <CardContent
+                        sx={{
+                          // flex: "1 0 auto",
+                          flexDirection: "row",
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "center",
+                        }}>
+                        <CardMedia
+                          component="img"
+                          sx={{
+                            width: "30%",
+                            height: "30%",
+                            marginRight: "10px",
+                          }}
+                          image={`https://res.cloudinary.com/daouvimjz/image/upload/v1676279237/${item?.product_picture}`}
+                          alt="Live from space album cover"
+                        />
 
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}>
-                      <Typography component="div" variant="h5">
-                        {item?.product_name}
-                      </Typography>
-                      <Typography
-                        variant="subtitle1"
-                        color="text.secondary"
-                        component="div">
-                        Rp.{parseInt(item?.total_est)}
-                      </Typography>
-                    </div>
-                  </CardContent>
-                </Box>
-              </Card>
-            </React.Fragment>
-          ))}
-          <style>
-            {`
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}>
+                          <Typography component="div" variant="h5">
+                            {item?.product_name}
+                          </Typography>
+                          <Typography
+                            variant="subtitle1"
+                            color="text.secondary"
+                            component="div">
+                            Rp.{parseInt(item?.total_est)}
+                          </Typography>
+                        </div>
+                      </CardContent>
+                    </Box>
+                  </Card>
+                </React.Fragment>
+              ))}
+              <style>
+                {`
 ::-webkit-scrollbar {
   width: 0.1em;
   height: 0.5em;
@@ -618,7 +624,25 @@ export default function Navbar() {
   background-color: rgba(0, 0, 0, 0.2);
 }
 `}
-          </style>
+              </style>
+            </>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <img
+                src="https://res.cloudinary.com/daouvimjz/image/upload/v1680192590/ecommerce/noORderYet_hfqeqg.png"
+                alt="no notification yet"
+                style={{
+                  height: "50%",
+                  width: "50%",
+                }}
+              />
+            </div>
+          )}
         </MyCardCart>
       </MyModalCart>
     </>

@@ -221,7 +221,7 @@ export default function DetailProduct(props) {
     return str.replace(/\d(?=(\d{3})+$)/g, "$&.");
   };
 
-  // console.log("getProducts---", getProducts);
+  console.log("getProducts---", getProducts);
 
   const handleChange = (event) => {
     setColor(event.target.value);

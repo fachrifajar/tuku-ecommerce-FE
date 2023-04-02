@@ -6,6 +6,8 @@ import { BsFillPencilFill, BsBoxSeam, BsCart2 } from "react-icons/bs";
 import { useRouter } from "next/router";
 import { Typography } from "@mui/material";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { AiOutlineUser } from "react-icons/ai";
 
 export default function sidebar() {
   const router = useRouter();
@@ -83,6 +85,31 @@ export default function sidebar() {
             router.push("/store/selling");
           }}>
           Add Products
+        </Typography>
+      </div>
+      <div className="store mt-3 d-flex align-items-center">
+        <div
+          className={`${style.bgIcon}`}
+          style={{
+            backgroundColor: "#456BF3",
+          }}>
+          <AiOutlineUser className={`${style.icon}`} size={100} />
+        </div>
+
+        <Typography
+          variant="body1"
+          sx={{
+            "&:hover": {
+              color: "#DB3022",
+            },
+            marginLeft: "15px",
+            cursor: "pointer",
+            color: router.pathname === "/user/profile" ? "#DB3022" : "inherit",
+          }}
+          onClick={() => {
+            router.push("/user/profile");
+          }}>
+          My Account
         </Typography>
       </div>
     </div>
